@@ -41,7 +41,7 @@ namespace eagle
 
         if (handle == INVALID_HANDLE_VALUE)
         {
-            return error::OpenDirectoryHandle::InvalidValue;
+            return std::unexpected{ Error::LastOsError() };
         }
 
         return DirectoryHandle{ handle };

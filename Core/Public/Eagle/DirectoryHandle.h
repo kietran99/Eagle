@@ -1,19 +1,13 @@
 #pragma once
 
+#include <expected>
+
+#include "Error.h"
+
 namespace eagle
 {
-	namespace error
-	{
-		enum class OpenDirectoryHandle
-		{
-			InvalidValue,
-		};
-	}
-
-	struct ErrorInvalidHandleValue {};
-
 	struct DirectoryHandle;
-	using NewDirectoryHandleResult = std::variant<DirectoryHandle, error::OpenDirectoryHandle>;
+	using NewDirectoryHandleResult = std::expected<DirectoryHandle, Error>;
 
 	struct DirectoryHandle
 	{

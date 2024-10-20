@@ -1,9 +1,11 @@
 #include "Pch.h"
 #include "Eagle/DirectoryWatcher.h"
 
+#include <format>
+
 namespace eagle
 {
-    WatchDirectoryChangesResult WatchDirectoryChanges(const DirectoryHandle& dirHandle, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
+    WatchResult WatchDirectoryChanges(const DirectoryHandle& dirHandle, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
     {
         DWORD bytesReturned{};
         const BOOL res = ReadDirectoryChangesW(
@@ -19,27 +21,14 @@ namespace eagle
 
         if (res == FALSE)
         {
-            return MakeLastError();
+            return std::unexpected{ Error::LastOsError() };
         }
 
         if (bytesReturned == 0)
         {
-            return ErrorInvalidBufferSize{};
+            return std::unexpected{ Error::New(ErrorKind::InvalidBufferSize, std::format("Invalid Buffer Size: {}", resultBuffer.size()))};
         }
 
         return DirectoryChangesSpan{ resultBuffer };
     }
-
-    //void ForEachDirectoryChange(std::span<char> resultBuffer, DirectoryChangedCallback dirChangedCb)
-    //{
-    //    PFILE_NOTIFY_INFORMATION notifyInfo{ nullptr };
-    //    DWORD accOffset{ 0 };
-    //    do
-    //    {
-    //        notifyInfo = reinterpret_cast<PFILE_NOTIFY_INFORMATION>(resultBuffer.data() + accOffset);
-    //        std::wstring fileName(notifyInfo->FileName, notifyInfo->FileNameLength / sizeof(wchar_t));
-    //        dirChangedCb(static_cast<eagle::FileAction>(notifyInfo->Action), fileName);
-    //        accOffset += notifyInfo->NextEntryOffset;
-    //    } while (notifyInfo->NextEntryOffset != 0);
-    //}
 }

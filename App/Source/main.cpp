@@ -3,6 +3,7 @@
 #include <iostream>
 #include <span>
 #include <variant>
+#include <expected>
 
 #include "Eagle/DirectoryWatcher.h"
 
@@ -15,18 +16,13 @@ struct overloaded : Ts... { using Ts::operator()...; };
 int main()
 {
     const eagle::NewDirectoryHandleResult result{ eagle::DirectoryHandle::New(R"(D:\Workspace\eagle_test)") };
-    std::visit(overloaded
+    if (!result)
     {
-        [](const eagle::error::OpenDirectoryHandle&)
-        {
-            const eagle::ErrorGeneric lastError = eagle::MakeLastError();
-            printf("%s\n", lastError.Message.c_str());
-        },
-        [](const eagle::DirectoryHandle& dirHandle)
-        {
-            StartWatchDirectoryChangesLoop(dirHandle);
-        }
-    }, result);
+        printf("%s\n", result.error().Message());
+        return -1;
+    }
+
+    StartWatchDirectoryChangesLoop(*result);
 
     return 0;
 }
@@ -44,39 +40,24 @@ void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle)
             | eagle::NotifyFilters::FileSize
             | eagle::NotifyFilters::CreationTime;
 
-        const eagle::WatchDirectoryChangesResult res = eagle::WatchDirectoryChanges(
+        const eagle::WatchResult res = eagle::WatchDirectoryChanges(
             dirHandle
             , dirChangesBuffer
             , notifyFilters
             , true
         );
 
-        const bool shouldContLoop = std::visit(overloaded
+        if (!res)
         {
-            [](const eagle::ErrorInvalidBufferSize& err)
-            {
-                return false;
-            },
-            [](const eagle::ErrorGeneric& err)
-            {
-                const eagle::ErrorGeneric lastError = eagle::MakeLastError();
-                printf("%s\n", lastError.Message.c_str());
-                return false;
-            },
-            [](const eagle::DirectoryChangesSpan& dirChanges)
-            {
-                for (const auto& fileNotify : dirChanges)
-                {
-                    OnDirectoryChanged(fileNotify.FileAction(), fileNotify.FilePath());
-                }
-
-                return true;
-            }
-        }, res);
-
-        if (!shouldContLoop)
-        {
+            const auto& error = res.error();
+            printf("%s\n", error.Message());
             break;
+        }
+
+        const auto& dirChanges = *res;
+        for (const auto& fileNotify : dirChanges)
+        {
+            OnDirectoryChanged(fileNotify.FileAction(), fileNotify.FilePath());
         }
     } while (true);
 }
