@@ -3,17 +3,23 @@ project "Eagle"
     language "C++"
     cppdialect "C++20"
     staticruntime "Off"
+    exceptionhandling "Off"
 
     files
     {
+        "Public/**.h",
         "Source/**.h",
         "Source/**.cpp",
     }
-
+    
     includedirs
     {
+        "Public",
         "Source",
     }
+
+    pchheader "Pch.h"
+    pchsource "Source/Pch.cpp"
 
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")

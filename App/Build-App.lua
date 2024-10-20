@@ -3,6 +3,7 @@ project "App"
     language "C++"
     cppdialect "C++20"
     staticruntime "Off"
+    exceptionhandling "Off"
 
     files
     {
@@ -13,7 +14,7 @@ project "App"
     includedirs
     {
         "Source",
-        "../Core/Source",
+        "../Core/Public",
     }
 
     links

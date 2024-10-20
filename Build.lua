@@ -1,6 +1,6 @@
 workspace "Eagle-Sandbox"
     architecture "x64"
-    configurations { "Debug", "Release", "Dist"}
+    configurations { "Debug", "Release", "Dist" }
     startproject "App"
 
     filter "system:windows"
