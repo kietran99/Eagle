@@ -1,9 +1,5 @@
-#include <Windows.h>
 #include <array>
 #include <iostream>
-#include <span>
-#include <variant>
-#include <expected>
 
 #include "Eagle/DirectoryWatcher.h"
 

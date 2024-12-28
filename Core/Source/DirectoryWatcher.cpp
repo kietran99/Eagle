@@ -1,14 +1,12 @@
 #include "Pch.h"
 #include "Eagle/DirectoryWatcher.h"
 
-#include <format>
-
 namespace eagle
 {
     WatchResult WatchDirectoryChanges(const DirectoryHandle& dirHandle, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
     {
         DWORD bytesReturned{};
-        const BOOL res = ReadDirectoryChangesW(
+        const BOOL res = ::ReadDirectoryChangesW(
             dirHandle,
             resultBuffer.data(),
             static_cast<DWORD>(resultBuffer.size_bytes()),

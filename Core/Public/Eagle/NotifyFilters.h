@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Windows.h>
+
 namespace eagle
 {
-	enum class NotifyFilters : uint16_t
+	enum class NotifyFilters : uint32_t
 	{
 		FileName = 0x00000001,
 		DirName = 0x00000002,

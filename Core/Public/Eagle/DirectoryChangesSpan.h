@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <span>
+#include <string_view>
 
 #include "FileAction.h"
 
