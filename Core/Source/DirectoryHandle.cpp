@@ -27,6 +27,18 @@ namespace eagle
         }
     }
 
+    DirectoryHandle& DirectoryHandle::operator=(DirectoryHandle&& other) noexcept
+    {
+        if (other == this)
+        {
+            return *this;
+        }
+
+        m_handle = other.m_handle;
+        other.m_handle = INVALID_HANDLE_VALUE;
+        return *this;
+    }
+
     NewDirectoryHandleResult DirectoryHandle::New(const char* dirPath)
     {
         HANDLE handle = CreateFileA(

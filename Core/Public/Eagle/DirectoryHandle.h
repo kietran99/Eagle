@@ -19,6 +19,7 @@ namespace eagle
 		~DirectoryHandle();
 
 		DirectoryHandle& operator=(const DirectoryHandle&) = delete;
+		DirectoryHandle& operator=(DirectoryHandle&&) noexcept;
 
 		static NewDirectoryHandleResult New(const char* dirPath);
 
