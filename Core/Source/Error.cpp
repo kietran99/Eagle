@@ -66,8 +66,8 @@ namespace eagle
         {
         case Os: return "OS error";
         case InvalidBufferSize: return "Invalid buffer size";
-        case Other: return "other error";
-        default: return "unknown error";
+        case Other: return "Other error";
+        default: return "Unknown error";
         }
     }
 }
