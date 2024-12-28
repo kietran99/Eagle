@@ -6,18 +6,17 @@
 
 namespace eagle
 {
-	struct DirectoryHandle;
+	class DirectoryHandle;
 	using NewDirectoryHandleResult = std::expected<DirectoryHandle, Error>;
 
-	struct DirectoryHandle
+	class DirectoryHandle
 	{
+	public:
 		DirectoryHandle(void* handle);
 
 		DirectoryHandle(const DirectoryHandle&) = delete;
 		DirectoryHandle(DirectoryHandle&&) noexcept;
-
 		~DirectoryHandle();
-
 		DirectoryHandle& operator=(const DirectoryHandle&) = delete;
 		DirectoryHandle& operator=(DirectoryHandle&&) noexcept;
 
@@ -25,6 +24,7 @@ namespace eagle
 
 		operator void*() const { return m_handle; }
 		
+	private:
 		void* m_handle;
 	};
 }
