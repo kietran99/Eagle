@@ -3,11 +3,11 @@
 #include "Error.h"
 #include "DirectoryHandle.h"
 #include "NotifyFilters.h"
-#include "DirectoryChangesSpan.h"
+#include "NotifyEventSpan.h"
 
 namespace eagle
 {
-	using WatchResult = std::expected<DirectoryChangesSpan, Error>;
+	using WatchResult = std::expected<NotifyEventSpan, Error>;
 
 	WatchResult WatchDirectoryChanges(
 		const DirectoryHandle& dirHandle

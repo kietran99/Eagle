@@ -8,9 +8,16 @@ project "Eagle"
     files
     {
         "Public/**.h",
-        "Source/**.h",
-        "Source/**.cpp",
     }
+
+    filter "system:windows"
+        files
+        {
+            "Source/Windows/**.h",
+            "Source/Windows/**.cpp",
+        }
+
+    filter {}
     
     includedirs
     {
@@ -18,15 +25,20 @@ project "Eagle"
         "Source",
     }
 
-    pchheader "Pch.h"
-    pchsource "Source/Pch.cpp"
+    filter "system:windows"
+        pchheader "Pch.h"
+        pchsource "Source/Windows/Pch.cpp"
+
+    filter {}  
 
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
     filter "system:windows"
         systemversion "latest"
-        defines {}
+        defines { "NOMINMAX" }
+
+    filter {}
 
     filter "configurations:Debug"
         defines { "DEBUG" }

@@ -53,7 +53,7 @@ void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle)
         const auto& dirChanges = *res;
         for (const auto& fileNotify : dirChanges)
         {
-            OnDirectoryChanged(fileNotify.FileAction(), fileNotify.FilePath());
+            OnDirectoryChanged(fileNotify.Type(), fileNotify.Path());
         }
     } while (true);
 }

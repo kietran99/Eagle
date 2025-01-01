@@ -27,6 +27,6 @@ namespace eagle
             return std::unexpected{ Error::New(ErrorKind::InvalidBufferSize, std::format("Invalid Buffer Size: {}", resultBuffer.size()))};
         }
 
-        return DirectoryChangesSpan{ resultBuffer };
+        return NotifyEventSpan{ resultBuffer };
     }
 }

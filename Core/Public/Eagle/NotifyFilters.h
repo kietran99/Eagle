@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-
 namespace eagle
 {
 	enum class NotifyFilters : uint32_t
@@ -16,5 +14,11 @@ namespace eagle
 		Security = 0x00000100,
 	};
 
-	DEFINE_ENUM_FLAG_OPERATORS(NotifyFilters)
+	inline constexpr NotifyFilters operator | (NotifyFilters a, NotifyFilters b) { return NotifyFilters(((uint32_t)a) | ((uint32_t)b)); }
+	inline NotifyFilters& operator |= (NotifyFilters& a, NotifyFilters b) { return (NotifyFilters&)(((uint32_t&)a) |= ((uint32_t)b)); }
+	inline constexpr NotifyFilters operator & (NotifyFilters a, NotifyFilters b) { return NotifyFilters(((uint32_t)a) & ((uint32_t)b)); }
+	inline NotifyFilters& operator &= (NotifyFilters& a, NotifyFilters b) { return (NotifyFilters&)(((uint32_t&)a) &= ((uint32_t)b)); }
+	inline constexpr NotifyFilters operator ~ (NotifyFilters a) { return NotifyFilters(~((uint32_t)a)); }
+	inline constexpr NotifyFilters operator ^ (NotifyFilters a, NotifyFilters b) { return NotifyFilters(((uint32_t)a) ^ ((uint32_t)b)); }
+	inline NotifyFilters& operator ^= (NotifyFilters& a, NotifyFilters b) { return (NotifyFilters&)(((uint32_t&)a) ^= ((uint32_t)b)); }
 }
