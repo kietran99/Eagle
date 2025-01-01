@@ -1,5 +1,6 @@
 #include <array>
 #include <iostream>
+#include <print>
 
 #include "Eagle/DirectoryWatcher.h"
 
@@ -14,7 +15,7 @@ int main()
     const eagle::NewDirectoryHandleResult result{ eagle::DirectoryHandle::New(R"(D:\Workspace\eagle_test)") };
     if (!result)
     {
-        printf("%s\n", result.error().Message());
+        std::println("{}", result.error().Message());
         return -1;
     }
 
@@ -46,7 +47,7 @@ void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle)
         if (!res)
         {
             const auto& error = res.error();
-            printf("%s\n", error.Message());
+            std::println("{}", error.Message());
             break;
         }
 
