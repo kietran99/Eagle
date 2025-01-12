@@ -7,12 +7,12 @@
 
 namespace eagle
 {
-	using WatchResult = std::expected<NotifyEventSpan, Error>;
+using WatchResult = std::expected<NotifyEventSpan, Error>;
 
-	WatchResult WatchDirectoryChanges(
-		const DirectoryHandle& dirHandle
-		, std::span<char> resultBuffer
-		, NotifyFilters notifyFilters
-		, bool shouldWatchHierarchy
-	);
+WatchResult WatchDirectoryChanges(
+	const DirectoryHandle& dirHandle
+	, std::span<char> resultBuffer
+	, NotifyFilters notifyFilters
+	, bool shouldWatchHierarchy
+);
 }
