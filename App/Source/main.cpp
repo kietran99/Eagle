@@ -13,7 +13,7 @@ struct overloaded : Ts... { using Ts::operator()...; };
 
 int main()
 {
-    const eagle::NewDirectoryHandleResult result{ eagle::DirectoryHandle::New(R"(D:/Workspace/eagle_test)") };
+    const eagle::NewDirectoryHandleResult result{ eagle::DirectoryHandle::New("D:/Workspace/eagle_test") };
     if (!result)
     {
         std::println("{}", result.error().Message());
