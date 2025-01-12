@@ -1,6 +1,7 @@
 #pragma once
 
 #include <expected>
+#include <filesystem>
 
 #include "Error.h"
 
@@ -20,7 +21,7 @@ namespace eagle
 		DirectoryHandle& operator=(const DirectoryHandle&) = delete;
 		DirectoryHandle& operator=(DirectoryHandle&&) noexcept;
 
-		static NewDirectoryHandleResult New(const char* dirPath);
+		static NewDirectoryHandleResult New(std::filesystem::path pathName);
 
 		operator void*() const { return m_handle; }
 		

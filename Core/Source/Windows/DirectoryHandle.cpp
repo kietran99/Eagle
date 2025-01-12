@@ -39,10 +39,10 @@ namespace eagle
         return *this;
     }
 
-    NewDirectoryHandleResult DirectoryHandle::New(const char* dirPath)
+    NewDirectoryHandleResult DirectoryHandle::New(std::filesystem::path pathName)
     {
-        HANDLE handle = CreateFileA(
-            dirPath,
+        HANDLE handle = CreateFile(
+            pathName.c_str(),
             FILE_LIST_DIRECTORY,
             FILE_SHARE_READ,
             nullptr,
