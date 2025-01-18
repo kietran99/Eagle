@@ -6,7 +6,7 @@
 #include "Eagle/DirectoryWatcher.h"
 
 void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle);
-void OnDirectoryChanged(eagle::FileAction fileAction, std::wstring_view fileName);
+void OnDirectoryChanged(eagle::FileAction fileAction, std::wstring_view filePath);
 
 template<typename... Ts>
 struct overloaded : Ts... { using Ts::operator()...; };
