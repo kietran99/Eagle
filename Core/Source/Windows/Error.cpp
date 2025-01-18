@@ -66,6 +66,7 @@ const char* ToStr(ErrorKind kind)
     switch (kind)
     {
     case Os: return "OS error";
+    case InvalidWatchTarget: return "Invalid watch target";
     case InvalidBufferSize: return "Invalid buffer size";
     case Other: return "Other error";
     default: return "Unknown error";

@@ -8,6 +8,7 @@ namespace eagle
 enum class ErrorKind
 {
 	Os,
+	InvalidWatchTarget,
 	InvalidBufferSize,
 	Other,
 };

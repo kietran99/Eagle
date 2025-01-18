@@ -42,8 +42,13 @@ DirectoryHandle& DirectoryHandle::operator=(DirectoryHandle&& other) noexcept
 
 NewDirectoryHandleResult DirectoryHandle::New(const std::filesystem::path& dirPath)
 {
+    if (!std::filesystem::is_directory(dirPath))
+    {
+        return std::unexpected{ Error::New(ErrorKind::InvalidWatchTarget, "Watch target must be a directory") };
+    }
+
     HANDLE handle = CreateFile(
-        pathName.c_str(),
+        dirPath.c_str(),
         FILE_LIST_DIRECTORY,
         FILE_SHARE_READ,
         nullptr,
