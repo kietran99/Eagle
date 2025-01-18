@@ -8,6 +8,8 @@ project "Eagle"
     files
     {
         "Public/**.h",
+        "Source/Common/**.h",
+        "Source/Common/**.cpp",
     }
 
     filter "system:windows"
