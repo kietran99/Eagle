@@ -13,7 +13,6 @@ using NewDirectoryHandleResult = std::expected<DirectoryHandle, Error>;
 class DirectoryHandle
 {
 public:
-	DirectoryHandle(void* handle);
 
 	DirectoryHandle(const DirectoryHandle&) = delete;
 	DirectoryHandle(DirectoryHandle&&) noexcept;
@@ -24,6 +23,9 @@ public:
 	static NewDirectoryHandleResult New(std::filesystem::path pathName);
 
 	operator void*() const { return m_handle; }
+
+private:
+	DirectoryHandle(void* handle);
 		
 private:
 	void* m_handle;
