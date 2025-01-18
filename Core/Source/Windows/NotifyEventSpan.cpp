@@ -1,5 +1,6 @@
-#include "Pch.h"
 #include "Eagle/NotifyEventSpan.h"
+
+#include <Windows.h>
 
 namespace eagle
 {

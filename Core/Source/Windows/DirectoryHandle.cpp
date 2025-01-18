@@ -1,5 +1,6 @@
-#include "Pch.h"
 #include "Eagle/DirectoryHandle.h"
+
+#include <Windows.h>
 
 namespace eagle
 {

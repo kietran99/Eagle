@@ -25,10 +25,6 @@ project "Eagle"
         "Source",
     }
 
-    filter "system:windows"
-        pchheader "Pch.h"
-        pchsource "Source/Windows/Pch.cpp"
-
     filter {}  
 
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
