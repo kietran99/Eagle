@@ -20,7 +20,7 @@ public:
 	DirectoryHandle& operator=(const DirectoryHandle&) = delete;
 	DirectoryHandle& operator=(DirectoryHandle&&) noexcept;
 
-	static NewDirectoryHandleResult New(std::filesystem::path pathName);
+	static NewDirectoryHandleResult New(const std::filesystem::path& dirPath);
 
 	operator void*() const { return m_handle; }
 

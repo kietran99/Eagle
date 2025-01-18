@@ -40,7 +40,7 @@ DirectoryHandle& DirectoryHandle::operator=(DirectoryHandle&& other) noexcept
     return *this;
 }
 
-NewDirectoryHandleResult DirectoryHandle::New(std::filesystem::path pathName)
+NewDirectoryHandleResult DirectoryHandle::New(const std::filesystem::path& dirPath)
 {
     HANDLE handle = CreateFile(
         pathName.c_str(),
