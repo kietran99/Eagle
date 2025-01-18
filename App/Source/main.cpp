@@ -5,7 +5,7 @@
 
 #include "Eagle/DirectoryWatcher.h"
 
-void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle);
+void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
 void OnDirectoryChanged(eagle::FileAction fileAction, std::wstring_view filePath);
 
 template<typename... Ts>
@@ -13,7 +13,7 @@ struct overloaded : Ts... { using Ts::operator()...; };
 
 int main()
 {
-    const eagle::NewDirectoryHandleResult result{ eagle::DirectoryHandle::New(std::filesystem::current_path() / "Data" / "00") };
+    const eagle::NewWatchTargetResult result{ eagle::WatchTarget::New(std::filesystem::current_path() / "Data" / "00") };
     if (!result)
     {
         std::println("{}", result.error().Message());
@@ -25,7 +25,7 @@ int main()
     return 0;
 }
 
-void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle)
+void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
 {
     std::array<char, 4096> dirChangesBuffer{};
 
@@ -39,7 +39,7 @@ void StartWatchDirectoryChangesLoop(const eagle::DirectoryHandle& dirHandle)
             | eagle::NotifyFilters::CreationTime;
 
         const eagle::WatchResult res = eagle::WatchDirectoryChanges(
-            dirHandle
+            watchTarget
             , dirChangesBuffer
             , notifyFilters
             , true

@@ -5,11 +5,11 @@
 
 namespace eagle
 {
-WatchResult WatchDirectoryChanges(const DirectoryHandle& dirHandle, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
+WatchResult WatchDirectoryChanges(const WatchTarget& watchTarget, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
     const BOOL res = ::ReadDirectoryChangesW(
-        dirHandle,
+        watchTarget,
         resultBuffer.data(),
         static_cast<DWORD>(resultBuffer.size_bytes()),
         shouldWatchHierarchy ? TRUE : FALSE,

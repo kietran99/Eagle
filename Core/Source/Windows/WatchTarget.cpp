@@ -1,14 +1,14 @@
-#include "Eagle/DirectoryHandle.h"
+#include "Eagle/WatchTarget.h"
 
 #include <Windows.h>
 
 namespace eagle
 {
-DirectoryHandle::DirectoryHandle(void* handle)
+WatchTarget::WatchTarget(void* handle)
     : m_handle(handle)
 {}
 
-DirectoryHandle::DirectoryHandle(DirectoryHandle&& other) noexcept
+WatchTarget::WatchTarget(WatchTarget&& other) noexcept
     : m_handle(INVALID_HANDLE_VALUE)
 {
     if (other == this)
@@ -20,7 +20,7 @@ DirectoryHandle::DirectoryHandle(DirectoryHandle&& other) noexcept
     other.m_handle = INVALID_HANDLE_VALUE;
 }
 
-DirectoryHandle::~DirectoryHandle()
+WatchTarget::~WatchTarget()
 {
     if (m_handle != INVALID_HANDLE_VALUE)
     {
@@ -28,7 +28,7 @@ DirectoryHandle::~DirectoryHandle()
     }
 }
 
-DirectoryHandle& DirectoryHandle::operator=(DirectoryHandle&& other) noexcept
+WatchTarget& WatchTarget::operator=(WatchTarget&& other) noexcept
 {
     if (other == this)
     {
@@ -40,7 +40,7 @@ DirectoryHandle& DirectoryHandle::operator=(DirectoryHandle&& other) noexcept
     return *this;
 }
 
-NewDirectoryHandleResult DirectoryHandle::New(const std::filesystem::path& dirPath)
+NewWatchTargetResult WatchTarget::New(const std::filesystem::path& dirPath)
 {
     if (!std::filesystem::is_directory(dirPath))
     {
@@ -62,6 +62,6 @@ NewDirectoryHandleResult DirectoryHandle::New(const std::filesystem::path& dirPa
         return std::unexpected{ Error::LastOsError() };
     }
 
-    return DirectoryHandle{ handle };
+    return WatchTarget{ handle };
 }
 }
