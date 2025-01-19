@@ -1,5 +1,3 @@
-# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
-# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
 name: Premake on multiple platforms
 
 on:
@@ -9,33 +7,8 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
-      fail-fast: false
-
-      # Set up a matrix to run the following 3 configurations:
-      # 1. <Windows, Release, latest MSVC compiler toolchain on the default runner image, default generator>
-      # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
-      # 3. <Linux, Release, latest Clang compiler toolchain on the default runner image, default generator>
-      #
-      # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
-      matrix:
-        os: [windows-latest]
-        build_type: [Release]
-        c_compiler: [gcc, clang, cl]
-        include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-
+  build_windows:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
 
@@ -45,9 +18,9 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        Vendor\Binaries\Premake\Windows\premake5.exe --file=Build.lua vs2022
-        msbuild /m /p:Configuration=Release Eagle-Sandbox.sln
+        Vendor\Binaries\Premake\Windows\premake5.exe --file=Test.lua vs2022
+        msbuild /m /p:Configuration=${{matrix.build_type}} /p:Platform=x64 Eagle-Test.sln
 
     - name: Test
-      # working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: echo "Running tests..."
+      working-directory: ${{env.GITHUB_WORKSPACE}}/Binaries/windows-x86_64/${{matrix.build_type}}/Test
+      run: ./Test.exe
