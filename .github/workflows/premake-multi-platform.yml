@@ -21,9 +21,9 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        Vendor\Binaries\Premake\Windows\premake5.exe --file=Test.lua vs2022
+        .\Vendor\Binaries\Premake\Windows\premake5.exe --file=Test.lua vs2022
         msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=x64 ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
-      working-directory: ${{env.GITHUB_WORKSPACE}}\Binaries\windows-x86_64\${{env.BUILD_CONFIGURATION}}\Test
-      run: ./Test.exe
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: .\Binaries\windows-x86_64\${{env.BUILD_CONFIGURATION}}\Test\Test.exe
