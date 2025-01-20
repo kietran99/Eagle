@@ -45,3 +45,7 @@ project "Test"
         runtime "Release"
         optimize "On"
         symbols "Off"
+
+    filter {}
+        
+    postbuildcommands { "{COPYDIR} Data " .. "%{cfg.targetdir}/Data" }
