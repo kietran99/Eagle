@@ -34,7 +34,11 @@ project "Eagle"
 
     filter "system:windows"
         systemversion "latest"
-        defines { "NOMINMAX" }
+        defines
+        {
+            "NOMINMAX",
+            "WIN32_LEAN_AND_MEAN",
+        }
 
     filter {}
 
