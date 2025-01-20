@@ -2,6 +2,7 @@
 
 #include <expected>
 #include <filesystem>
+#include <memory>
 
 #include "Error.h"
 
@@ -10,10 +11,11 @@ namespace eagle
 class WatchTarget;
 using NewWatchTargetResult = std::expected<WatchTarget, Error>;
 
+struct NativeHandle;
+
 class WatchTarget
 {
 public:
-
 	WatchTarget(const WatchTarget&) = delete;
 	WatchTarget(WatchTarget&&) noexcept;
 	~WatchTarget();
@@ -22,12 +24,12 @@ public:
 
 	static NewWatchTargetResult New(const std::filesystem::path& dirPath);
 
-	operator void*() const { return m_handle; }
+	const NativeHandle& GetNativeHandle() const { return *m_handle; }
 
 private:
-	WatchTarget(void* handle);
+	WatchTarget(std::unique_ptr<NativeHandle> handle);
 		
 private:
-	void* m_handle;
+	std::unique_ptr<NativeHandle> m_handle;
 };
 }

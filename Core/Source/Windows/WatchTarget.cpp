@@ -1,42 +1,47 @@
 #include "Eagle/WatchTarget.h"
 
 #include <Windows.h>
+#include <cassert>
+
+#include "NativeHandle.h"
 
 namespace eagle
 {
-WatchTarget::WatchTarget(void* handle)
-    : m_handle(handle)
-{}
+WatchTarget::WatchTarget(std::unique_ptr<NativeHandle> handle)
+    : m_handle(std::move(handle))
+{
+    assert(m_handle);
+    assert(m_handle->Id != INVALID_HANDLE_VALUE);
+}
 
 WatchTarget::WatchTarget(WatchTarget&& other) noexcept
-    : m_handle(INVALID_HANDLE_VALUE)
 {
-    if (other == this)
+    if (&other == this)
     {
         return;
     }
 
-    m_handle = other.m_handle;
-    other.m_handle = INVALID_HANDLE_VALUE;
+    m_handle = std::move(other.m_handle);
+    other.m_handle.reset();
 }
 
 WatchTarget::~WatchTarget()
 {
-    if (m_handle != INVALID_HANDLE_VALUE)
+    if (m_handle)
     {
-        CloseHandle(m_handle);
+        CloseHandle(m_handle->Id);
     }
 }
 
 WatchTarget& WatchTarget::operator=(WatchTarget&& other) noexcept
 {
-    if (other == this)
+    if (&other == this)
     {
         return *this;
     }
 
-    m_handle = other.m_handle;
-    other.m_handle = INVALID_HANDLE_VALUE;
+    m_handle = std::move(other.m_handle);
+    other.m_handle.reset();
     return *this;
 }
 
@@ -62,6 +67,6 @@ NewWatchTargetResult WatchTarget::New(const std::filesystem::path& dirPath)
         return std::unexpected{ Error::LastOsError() };
     }
 
-    return WatchTarget{ handle };
+    return WatchTarget{ std::make_unique<NativeHandle>(handle) };
 }
 }
