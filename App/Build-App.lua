@@ -46,6 +46,6 @@ project "App"
         optimize "On"
         symbols "Off"
 
-        filter {}
+    filter {}
         
-        postbuildcommands { "{COPYDIR} Data " .. "%{cfg.targetdir}/Data" }
+    postbuildcommands { "{COPYDIR} Data " .. "%{cfg.targetdir}/Data" }
