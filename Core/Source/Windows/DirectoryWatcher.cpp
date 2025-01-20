@@ -3,13 +3,15 @@
 #include <Windows.h>
 #include <format>
 
+#include "NativeHandle.h"
+
 namespace eagle
 {
 WatchResult WatchDirectoryChanges(const WatchTarget& watchTarget, std::span<char> resultBuffer, NotifyFilters notifyFilters, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
     const BOOL res = ::ReadDirectoryChangesW(
-        watchTarget,
+        watchTarget.GetNativeHandle(),
         resultBuffer.data(),
         static_cast<DWORD>(resultBuffer.size_bytes()),
         shouldWatchHierarchy ? TRUE : FALSE,
