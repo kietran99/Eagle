@@ -7,8 +7,8 @@ namespace eagle
 Error Error::LastOsError()
 {
     char msgBuf[256]{};
-    DWORD errCode{ GetLastError() };
-    FormatMessageA(
+    DWORD errCode{ ::GetLastError() };
+    ::FormatMessageA(
         (
             FORMAT_MESSAGE_FROM_SYSTEM
             | FORMAT_MESSAGE_IGNORE_INSERTS

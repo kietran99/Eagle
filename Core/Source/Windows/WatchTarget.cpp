@@ -29,7 +29,7 @@ WatchTarget::~WatchTarget()
 {
     if (m_handle)
     {
-        CloseHandle(m_handle->Id);
+        ::CloseHandle(m_handle->Id);
     }
 }
 
@@ -52,7 +52,7 @@ NewWatchTargetResult WatchTarget::New(const std::filesystem::path& dirPath)
         return std::unexpected{ Error::New(ErrorKind::InvalidWatchTarget, "Watch target must be a directory") };
     }
 
-    HANDLE handle = CreateFile(
+    HANDLE handle = ::CreateFile(
         dirPath.c_str(),
         FILE_LIST_DIRECTORY,
         FILE_SHARE_READ,
