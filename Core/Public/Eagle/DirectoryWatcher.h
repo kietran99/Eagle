@@ -2,6 +2,7 @@
 
 #include "Error.h"
 #include "WatchTarget.h"
+#include "WatchMask.h"
 #include "NotifyFilters.h"
 #include "NotifyEventSpan.h"
 
