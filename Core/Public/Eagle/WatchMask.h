@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 
 namespace eagle
 {
@@ -22,5 +23,5 @@ inline constexpr WatchMask operator ^ (WatchMask a, WatchMask b) { return WatchM
 inline WatchMask& operator ^= (WatchMask& a, WatchMask b) { return (WatchMask&)(((uint32_t&)a) ^= ((uint32_t)b)); }
 
 uint32_t ToNativeMask(WatchMask mask);
-WatchMask FromNativeMask(uint32_t mask);
+std::optional<WatchMask> FromNativeMask(uint32_t mask);
 }

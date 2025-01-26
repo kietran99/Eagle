@@ -18,7 +18,7 @@ uint32_t ToNativeMask(WatchMask mask)
         ;
 }
 
-WatchMask FromNativeMask(uint32_t mask)
+std::optional<WatchMask> FromNativeMask(uint32_t mask)
 {
     switch (mask)
     {
@@ -27,7 +27,7 @@ WatchMask FromNativeMask(uint32_t mask)
     case FILE_ACTION_MODIFIED: return WatchMask::ModifyContent;
     case FILE_ACTION_RENAMED_NEW_NAME: return WatchMask::MovedNewName;
     case FILE_ACTION_RENAMED_OLD_NAME: return WatchMask::MovedOldName;
-    default: std::unreachable(); // Meant to be called internally so this is guaranateed to be unreachable
+    default: return std::nullopt;
     }
 }
 }

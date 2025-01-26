@@ -47,7 +47,12 @@ TEST_CASE("Translate between Watch masks and native masks")
 	{
 		SUBCASE("Valid native mask")
 		{
-			REQUIRE(eagle::FromNativeMask(eagle::sample::FromNativeMaskMovedOldName()) == eagle::WatchMask::MovedOldName);
+			REQUIRE(eagle::FromNativeMask(eagle::sample::FromNativeMaskMovedOldName()).value() == eagle::WatchMask::MovedOldName);
+		}
+
+		SUBCASE("Invalid native mask")
+		{
+			REQUIRE(!eagle::FromNativeMask(6969).has_value());
 		}
 	}
 }
