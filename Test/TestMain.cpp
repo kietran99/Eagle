@@ -2,7 +2,8 @@
 #include "doctest.h"
 
 #include "Eagle/DirectoryWatcher.h"
-#include "Common/SampleWatchMaskValues.h"
+#include "Common/Sample/WatchMaskValues.h"
+#include "Common/Sample/NotifyActionValues.h"
 
 TEST_CASE("Watch target should be constructed properly")
 {
@@ -22,24 +23,36 @@ TEST_CASE("Watch target should be constructed properly")
 	}
 }
 
-TEST_CASE("Translate between Watch masks and native masks")
+TEST_CASE("Translate between Watch mask and native mask")
 {
-	SUBCASE("Watch masks to native masks")
-	{
 		SUBCASE("From single mask")
 		{
-			REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Create) == eagle::sample::ToNativeMaskCreate());
+		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::PathName) == eagle::sample::NativeMaskPathName());
+		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::FileContent) == eagle::sample::NativeMaskFileContent());
+		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::LastAccess) == eagle::sample::NativeMaskLastAccess());
+		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Attributes) == eagle::sample::NativeMaskAttributes());
 		}
 
-		SUBCASE("Multiple masks to same result masks")
+	SUBCASE("From aggregated mask")
 		{
-			REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Create | eagle::WatchMask::Delete) == eagle::sample::ToNativeMaskCreate());
-			REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Create | eagle::WatchMask::Delete) == eagle::sample::ToNativeMaskDelete());
+		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::PathName | eagle::WatchMask::FileContent) == (eagle::sample::NativeMaskPathName() | eagle::sample::NativeMaskFileContent()));
+}
 }
 
-		SUBCASE("Multiple masks to different result masks")
+TEST_CASE("Translate between Notify action and native action")
+{
+	SUBCASE("Valid native action")
+	{
+		REQUIRE(eagle::FromNativeAction(eagle::sample::NativeActionCreate()).value() == eagle::NotifyAction::Create);
+		REQUIRE(eagle::FromNativeAction(eagle::sample::NativeActionDelete()).value() == eagle::NotifyAction::Delete);
+		REQUIRE(eagle::FromNativeAction(eagle::sample::NativeActionModify()).value() == eagle::NotifyAction::Modify);
+		REQUIRE(eagle::FromNativeAction(eagle::sample::NativeActionMovedOldName()).value() == eagle::NotifyAction::MovedOldName);
+		REQUIRE(eagle::FromNativeAction(eagle::sample::NativeActionMovedNewName()).value() == eagle::NotifyAction::MovedNewName);
+	}
+
+	SUBCASE("Invalid native action")
 		{
-			REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Create | eagle::WatchMask::ModifyContent) == (eagle::sample::ToNativeMaskCreate() | eagle::sample::ToNativeMaskModifyContent()));
+		REQUIRE(!eagle::FromNativeAction(6969u).has_value());
 		}
 	}
 

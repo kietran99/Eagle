@@ -5,7 +5,7 @@
 #include "Eagle/DirectoryWatcher.h"
 
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
-void OnDirectoryChanged(eagle::FileAction fileAction, std::wstring_view filePath);
+void OnDirectoryChanged(eagle::NotifyAction action, std::wstring_view filePath);
 
 template<typename... Ts>
 struct overloaded : Ts... { using Ts::operator()...; };
@@ -30,17 +30,15 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
 
     do
     {
-        const eagle::NotifyFilters notifyFilters =
-            eagle::NotifyFilters::LastWrite
-            | eagle::NotifyFilters::FileName
-            | eagle::NotifyFilters::DirName
-            | eagle::NotifyFilters::FileSize
-            | eagle::NotifyFilters::CreationTime;
+        constexpr eagle::WatchMask watchMask =
+            eagle::WatchMask::PathName
+            | eagle::WatchMask::FileContent
+            ;
 
         const eagle::WatchResult res = eagle::WatchDirectoryChanges(
             watchTarget
             , dirChangesBuffer
-            , notifyFilters
+            , watchMask
             , true
         );
 
@@ -54,25 +52,25 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
         const auto& dirChanges = *res;
         for (const auto& fileNotify : dirChanges)
         {
-            OnDirectoryChanged(fileNotify.Type(), fileNotify.Path());
+            OnDirectoryChanged(fileNotify.Action(), fileNotify.Path());
         }
     } while (true);
 }
 
-void OnDirectoryChanged(eagle::FileAction fileAction, std::wstring_view filePath)
+void OnDirectoryChanged(eagle::NotifyAction action, std::wstring_view filePath)
 {
-    const auto action = [fileAction]() -> const char*
+    const auto actionStr = [action]() -> const char*
     {
-        switch (fileAction)
+        switch (action)
         {
-        case eagle::FileAction::Added:              return "FILE_ACTION_ADDED";
-        case eagle::FileAction::Removed:            return "FILE_ACTION_REMOVED";
-        case eagle::FileAction::Modified:           return "FILE_ACTION_MODIFIED";
-        case eagle::FileAction::RenamedOldName:     return "FILE_ACTION_RENAMED_OLD_NAME";
-        case eagle::FileAction::RenamedNewName:     return "FILE_ACTION_RENAMED_NEW_NAME";
+        case eagle::NotifyAction::Create:           return "Created";
+        case eagle::NotifyAction::Delete:           return "Deleted";
+        case eagle::NotifyAction::Modify:           return "Modified";
+        case eagle::NotifyAction::MovedOldName:     return "Moved Old Name";
+        case eagle::NotifyAction::MovedNewName:     return "Moved New Name";
         default: return "";
         }
     }();
 
-    printf("%s %.*ls\n", action, static_cast<int>(filePath.length()), filePath.data());
+    printf("%s %.*ls\n", actionStr, static_cast<int>(filePath.length()), filePath.data());
 }

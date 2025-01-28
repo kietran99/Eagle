@@ -6,7 +6,7 @@
 #include <span>
 #include <string_view>
 
-#include "FileAction.h"
+#include "NotifyAction.h"
 
 namespace eagle
 {
@@ -14,7 +14,7 @@ struct NotifyEvent
 {
 	NotifyEvent(char* data) : m_data(data) {}
 
-	eagle::FileAction Type() const;
+	NotifyAction Action() const;
 	std::wstring_view Path() const;
 
 	char* m_data;
