@@ -1,13 +1,16 @@
 #include "Eagle/NotifyEventSpan.h"
 
 #include <Windows.h>
+#include <cassert>
 
 namespace eagle
 {
-eagle::FileAction NotifyEvent::Type() const
+NotifyAction NotifyEvent::Action() const
 {
 	const auto nativeData = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(m_data);
-	return static_cast<eagle::FileAction>(nativeData->Action);
+	const std::optional<NotifyAction> optMask{ FromNativeAction(nativeData->Action) };
+	assert(optMask.has_value());
+	return *optMask;
 }
 
 std::wstring_view NotifyEvent::Path() const

@@ -7,13 +7,24 @@ project "Test"
 
     files
     {
-        "**.h",
-        "**.cpp",
+        "*.h",
+        "*.cpp",
+        "Source/Common/**.h",
+        "Source/Common/**.cpp",
     }
+
+    filter "system:windows"
+        files
+        {
+            "Source/Windows/**.h",
+            "Source/Windows/**.cpp",
+        }
+
+    filter {}
 
     includedirs
     {
-        -- "Source",
+        "Source",
         "../Core/Public",
     }
 
