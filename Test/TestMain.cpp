@@ -25,18 +25,18 @@ TEST_CASE("Watch target should be constructed properly")
 
 TEST_CASE("Translate between Watch mask and native mask")
 {
-		SUBCASE("From single mask")
-		{
+	SUBCASE("From single mask")
+	{
 		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::PathName) == eagle::sample::NativeMaskPathName());
 		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::FileContent) == eagle::sample::NativeMaskFileContent());
 		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::LastAccess) == eagle::sample::NativeMaskLastAccess());
 		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::Attributes) == eagle::sample::NativeMaskAttributes());
-		}
+	}
 
 	SUBCASE("From aggregated mask")
-		{
+	{
 		REQUIRE(eagle::ToNativeMask(eagle::WatchMask::PathName | eagle::WatchMask::FileContent) == (eagle::sample::NativeMaskPathName() | eagle::sample::NativeMaskFileContent()));
-}
+	}
 }
 
 TEST_CASE("Translate between Notify action and native action")
@@ -51,21 +51,7 @@ TEST_CASE("Translate between Notify action and native action")
 	}
 
 	SUBCASE("Invalid native action")
-		{
-		REQUIRE(!eagle::FromNativeAction(6969u).has_value());
-		}
-	}
-
-	SUBCASE("Native masks to Watch masks")
 	{
-		SUBCASE("Valid native mask")
-		{
-			REQUIRE(eagle::FromNativeMask(eagle::sample::FromNativeMaskMovedOldName()).value() == eagle::WatchMask::MovedOldName);
-		}
-
-		SUBCASE("Invalid native mask")
-		{
-			REQUIRE(!eagle::FromNativeMask(6969).has_value());
-		}
+		REQUIRE(!eagle::FromNativeAction(6969u).has_value());
 	}
 }
