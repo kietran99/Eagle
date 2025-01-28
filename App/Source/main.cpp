@@ -7,9 +7,6 @@
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
 void OnDirectoryChanged(eagle::NotifyAction action, std::wstring_view filePath);
 
-template<typename... Ts>
-struct overloaded : Ts... { using Ts::operator()...; };
-
 int main()
 {
     const eagle::NewWatchTargetResult result{ eagle::WatchTarget::New(std::filesystem::current_path() / "Data" / "00") };
