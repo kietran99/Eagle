@@ -9,16 +9,18 @@ void OnDirectoryChanged(eagle::NotifyAction action, std::wstring_view filePath);
 
 int main()
 {
-    const eagle::NewWatchTargetResult result{ eagle::WatchTarget::New(std::filesystem::current_path() / "Data" / "00") };
-    if (!result)
-    {
-        std::println("{}", result.error().Message());
-        return -1;
-    }
-
-    StartWatchDirectoryChangesLoop(*result);
-
-    return 0;
+    return eagle::WatchTarget::New(std::filesystem::current_path() / "Data")
+        .transform([](const eagle::WatchTarget& watchTarget)
+        {
+            StartWatchDirectoryChangesLoop(watchTarget);
+            return 0;
+        })
+        .transform_error([](const eagle::Error& error)
+        {
+            std::println("{}", error.Message());
+            return std::monostate{};
+        })
+        .value_or(-1);
 }
 
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
