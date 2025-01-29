@@ -1,4 +1,4 @@
-#include "Eagle/DirectoryWatcher.h"
+#include "Eagle/FilesystemWatcher.h"
 
 #include <Windows.h>
 #include <format>
@@ -7,7 +7,7 @@
 
 namespace eagle
 {
-WatchResult WatchDirectoryChanges(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
+WatchResult WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
     const BOOL res = ::ReadDirectoryChangesW(

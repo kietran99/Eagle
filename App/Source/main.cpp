@@ -2,7 +2,7 @@
 #include <iostream>
 #include <print>
 
-#include "Eagle/DirectoryWatcher.h"
+#include "Eagle/FilesystemWatcher.h"
 
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
 void OnDirectoryChanged(eagle::NotifyAction action, std::wstring_view filePath);
@@ -34,7 +34,7 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
             | eagle::WatchMask::FileContent
             ;
 
-        const eagle::WatchResult res = eagle::WatchDirectoryChanges(
+        const eagle::WatchResult res = eagle::WatchFilesystemEvents(
             watchTarget
             , dirChangesBuffer
             , watchMask

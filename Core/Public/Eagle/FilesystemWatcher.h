@@ -9,7 +9,7 @@ namespace eagle
 {
 using WatchResult = std::expected<NotifyEventSpan, Error>;
 
-WatchResult WatchDirectoryChanges(
+WatchResult WatchFilesystemEvents(
 	const WatchTarget& watchTarget
 	, std::span<char> resultBuffer
 	, WatchMask watchMask
