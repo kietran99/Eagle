@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "Eagle/DirectoryWatcher.h"
+#include "Eagle/FilesystemWatcher.h"
 #include "Common/Sample/WatchMaskValues.h"
 #include "Common/Sample/NotifyActionValues.h"
 
