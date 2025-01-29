@@ -13,10 +13,11 @@ NotifyAction NotifyEvent::Action() const
 	return *optMask;
 }
 
-std::wstring_view NotifyEvent::Path() const
+std::filesystem::path NotifyEvent::Path() const
 {
 	const auto nativeData = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(m_data);
-	return std::wstring_view(nativeData->FileName, nativeData->FileNameLength / sizeof(wchar_t));
+	const auto filePathStr = std::wstring_view(nativeData->FileName, nativeData->FileNameLength / sizeof(wchar_t));
+	return std::filesystem::path{ filePathStr.cbegin(), filePathStr.cend() };
 }
 
 NotifyEventSpan::Iterator& NotifyEventSpan::Iterator::operator++()
