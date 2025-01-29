@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <filesystem>
 #include <iterator>
 #include <span>
 #include <string_view>
@@ -15,7 +16,7 @@ struct NotifyEvent
 	NotifyEvent(char* data) : m_data(data) {}
 
 	NotifyAction Action() const;
-	std::wstring_view Path() const;
+	std::filesystem::path Path() const;
 
 	char* m_data;
 };
