@@ -5,7 +5,7 @@
 #include "Eagle/FilesystemWatcher.h"
 
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
-void OnDirectoryChanged(eagle::NotifyAction action, const std::filesystem::path& filePath);
+void PrintNotifyEvent(eagle::NotifyAction action, const std::filesystem::path& filePath);
 
 int main()
 {
@@ -51,12 +51,12 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
         const auto& dirChanges = *res;
         for (const auto& fileNotify : dirChanges)
         {
-            OnDirectoryChanged(fileNotify.Action(), fileNotify.Path());
+            PrintNotifyEvent(fileNotify.Action(), fileNotify.Path());
         }
     } while (true);
 }
 
-void OnDirectoryChanged(eagle::NotifyAction action, const std::filesystem::path& filePath)
+void PrintNotifyEvent(eagle::NotifyAction action, const std::filesystem::path& filePath)
 {
     const auto actionStr = [action]() -> const char*
     {
