@@ -1,11 +1,11 @@
 #include <array>
 #include <iostream>
+#include <ranges>
 #include <print>
 
 #include "Eagle/FilesystemWatcher.h"
 
 void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
-void PrintNotifyEvent(eagle::NotifyAction action, const std::filesystem::path& filePath);
 
 int main()
 {
@@ -34,42 +34,43 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
             | eagle::WatchMask::FileContent
             ;
 
-        const eagle::WatchResult res = eagle::WatchFilesystemEvents(
+        const eagle::WatchResult watchResult = eagle::WatchFilesystemEvents(
             watchTarget
             , dirChangesBuffer
             , watchMask
             , true
         );
 
-        if (!res)
+        if (!watchResult)
         {
-            const auto& error = res.error();
+            const auto& error = watchResult.error();
             std::println("{}", error.Message());
             break;
         }
 
-        const auto& dirChanges = *res;
-        for (const auto& fileNotify : dirChanges)
+        const auto NotifyEventToStr = [](const eagle::NotifyEvent& event)
         {
-            PrintNotifyEvent(fileNotify.Action(), fileNotify.Path());
+            const auto actionStr = [&event]() -> const char*
+            {
+                switch (event.Action())
+                {
+                case eagle::NotifyAction::Create:           return "Created";
+                case eagle::NotifyAction::Delete:           return "Deleted";
+                case eagle::NotifyAction::Modify:           return "Modified";
+                case eagle::NotifyAction::MovedOldName:     return "Moved Old Name";
+                case eagle::NotifyAction::MovedNewName:     return "Moved New Name";
+                default: return "";
+                }
+            }();
+
+            return std::format("{} {}", actionStr, event.Path().string());
+        };
+
+        for (const auto& notifyEvent : *watchResult
+            | std::views::filter([](const eagle::NotifyEvent& event) { return event.Action() == eagle::NotifyAction::Create || event.Action() == eagle::NotifyAction::Modify; })
+            | std::views::transform(NotifyEventToStr))
+        {
+            std::println("{}", notifyEvent);
         }
     } while (true);
-}
-
-void PrintNotifyEvent(eagle::NotifyAction action, const std::filesystem::path& filePath)
-{
-    const auto actionStr = [action]() -> const char*
-    {
-        switch (action)
-        {
-        case eagle::NotifyAction::Create:           return "Created";
-        case eagle::NotifyAction::Delete:           return "Deleted";
-        case eagle::NotifyAction::Modify:           return "Modified";
-        case eagle::NotifyAction::MovedOldName:     return "Moved Old Name";
-        case eagle::NotifyAction::MovedNewName:     return "Moved New Name";
-        default: return "";
-        }
-    }();
-
-    std::println("{} {}", actionStr, filePath.string());
 }
