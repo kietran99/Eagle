@@ -1,9 +1,16 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include <cstdint>
+#include <iterator>
+#include <ranges>
+#include <string_view>
+
 #include "Eagle/FilesystemWatcher.h"
+
 #include "Common/Sample/WatchMaskValues.h"
 #include "Common/Sample/NotifyActionValues.h"
+#include "Common/Sample/WatchResultBuffers.h"
 
 TEST_CASE("Watch target should be constructed properly")
 {
@@ -53,5 +60,43 @@ TEST_CASE("Translate between Notify action and native action")
 	SUBCASE("Invalid native action")
 	{
 		REQUIRE(!eagle::FromNativeAction(6969u).has_value());
+	}
+}
+
+TEST_CASE("Notify events parse")
+{
+	using namespace std::literals;
+
+	SUBCASE("Parse single event")
+	{
+		constexpr eagle::sample::ParsedNotifyEvent event{ eagle::NotifyAction::Create, "newdir"sv };
+
+		eagle::sample::WatchResultBuffer watchResultBuffer{ eagle::sample::MakeWatchResult(event) };
+		const eagle::NotifyEventSpan notifyEventSpan{ watchResultBuffer };
+		REQUIRE(std::ranges::distance(notifyEventSpan) == 1u);
+
+		const eagle::NotifyEvent& notifyEvent{ *notifyEventSpan.cbegin() };
+		REQUIRE(notifyEvent.Action() == event.Action);
+		REQUIRE(notifyEvent.Path() == event.Path);
+	}
+	
+	SUBCASE("Parse multi events")
+	{
+		eagle::sample::ParsedNotifyEvent events[2u]
+		{
+			{ eagle::NotifyAction::MovedOldName, "00\\renamebefore"sv },
+			{ eagle::NotifyAction::MovedNewName, "00\\renameafter"sv },
+		};
+
+		eagle::sample::WatchResultBuffer watchResultBuffer{ eagle::sample::MakeWatchResultMulti(events) };
+		const eagle::NotifyEventSpan notifyEventSpan{ watchResultBuffer };
+		REQUIRE(std::ranges::distance(notifyEventSpan) == std::size(events));
+
+		std::ranges::for_each(std::views::zip(notifyEventSpan, events), [](const std::pair<eagle::NotifyEvent, eagle::sample::ParsedNotifyEvent>& eventPair)
+		{
+			const auto& [event, parsedEvent] = eventPair;
+			REQUIRE(event.Action() == parsedEvent.Action);
+			REQUIRE(event.Path() == parsedEvent.Path);
+		});
 	}
 }
