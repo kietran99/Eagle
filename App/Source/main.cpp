@@ -50,7 +50,7 @@ void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
 
         const auto NotifyEventToStr = [](const eagle::NotifyEvent& event)
         {
-            const auto actionStr = [&event]() -> const char*
+            const auto actionStr = [event]() -> const char*
             {
                 switch (event.Action())
                 {
