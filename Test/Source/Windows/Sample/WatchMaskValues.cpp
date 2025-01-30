@@ -1,6 +1,6 @@
 #include "Common/Sample/WatchMaskValues.h"
 
-#include "Windows.h"
+#include <Windows.h>
 
 namespace eagle::sample
 {
