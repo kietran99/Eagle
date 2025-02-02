@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Windows.h>
+typedef void* HANDLE;
 
 namespace eagle
 {
