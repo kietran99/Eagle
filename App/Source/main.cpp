@@ -5,7 +5,7 @@
 
 #include "Eagle/FilesystemWatcher.h"
 
-void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget);
+void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget);
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
         .value_or(-1);
 }
 
-void StartWatchDirectoryChangesLoop(const eagle::WatchTarget& watchTarget)
+void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget)
 {
     std::array<char, 4096> dirChangesBuffer{};
 
