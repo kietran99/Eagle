@@ -55,7 +55,7 @@ NewWatchTargetResult WatchTarget::New(const std::filesystem::path& dirPath)
     HANDLE handle = ::CreateFile(
         dirPath.c_str(),
         FILE_LIST_DIRECTORY,
-        FILE_SHARE_READ,
+        FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
         nullptr,
         OPEN_EXISTING,
         FILE_FLAG_BACKUP_SEMANTICS,
