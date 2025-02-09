@@ -45,7 +45,7 @@ WatchTarget& WatchTarget::operator=(WatchTarget&& other) noexcept
     return *this;
 }
 
-NewWatchTargetResult WatchTarget::New(const std::filesystem::path& dirPath)
+Result<WatchTarget> WatchTarget::New(const std::filesystem::path& dirPath)
 {
     if (!std::filesystem::is_directory(dirPath))
     {

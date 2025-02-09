@@ -7,7 +7,7 @@
 
 namespace eagle
 {
-WatchResult WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
+Result<NotifyEventSpan> WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
     const BOOL res = ::ReadDirectoryChangesW(

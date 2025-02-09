@@ -4,13 +4,10 @@
 #include <filesystem>
 #include <memory>
 
-#include "Error.h"
+#include "Result.h"
 
 namespace eagle
 {
-class WatchTarget;
-using NewWatchTargetResult = std::expected<WatchTarget, Error>;
-
 struct NativeHandle;
 
 class WatchTarget
@@ -22,7 +19,7 @@ public:
 	WatchTarget& operator=(const WatchTarget&) = delete;
 	WatchTarget& operator=(WatchTarget&&) noexcept;
 
-	static NewWatchTargetResult New(const std::filesystem::path& dirPath);
+	static Result<WatchTarget> New(const std::filesystem::path& dirPath);
 
 	const NativeHandle& GetNativeHandle() const { return *m_handle; }
 

@@ -34,7 +34,7 @@ void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget)
             | eagle::WatchMask::FileContent
             ;
 
-        const eagle::WatchResult watchResult = eagle::WatchFilesystemEvents(
+        const eagle::Result<eagle::NotifyEventSpan> watchResult = eagle::WatchFilesystemEvents(
             watchTarget
             , dirChangesBuffer
             , watchMask
