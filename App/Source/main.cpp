@@ -65,12 +65,11 @@ void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTar
         | eagle::WatchMask::FileContent
         ;
 
-    const eagle::Result<eagle::IoQueryTask> ioQueryTaskResult = eagle::WatchFilesystemEventsAsync(
+    eagle::Result<eagle::IoTask<eagle::NotifyEventSpan>> ioQueryTaskResult = eagle::WatchFilesystemEventsAsync(
         watchTarget
         , filesystemEventsBuffer
         , watchMask
         , ioMux
-        , OnWatchResult
     );
 
     if (!ioQueryTaskResult)
@@ -80,11 +79,16 @@ void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTar
         return;
     }
 
-    const auto& ioQueryTask = *ioQueryTaskResult;
-    std::jthread t{ ioQueryTask, std::nullopt };
+    auto futureWatchResult = ioQueryTaskResult->get_future();
+    std::jthread t{ std::move(*ioQueryTaskResult), std::nullopt };
 
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(30s);
+    const auto optWatchResult = futureWatchResult.get();
+    if (!optWatchResult.has_value())
+    {
+        return;
+    }
+
+    OnWatchResult(*optWatchResult);
 }
 
 void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget)

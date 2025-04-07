@@ -8,12 +8,11 @@
 
 namespace eagle
 {
-Result<IoQueryTask> WatchFilesystemEventsAsync(
+Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
     const WatchTargetAsync& watchTarget
     , std::span<char> resultBuffer
     , WatchMask watchMask
     , const IoMux& ioMux
-    , std::function<void(Result<NotifyEventSpan>)> resultCallback
 )
 {
     const BOOL res = ::ReadDirectoryChangesW(
@@ -32,15 +31,7 @@ Result<IoQueryTask> WatchFilesystemEventsAsync(
         return std::unexpected{ Error::LastOsError() };
     }
 
-    return IoQueryTask::New(ioMux, watchTarget.GetNativeHandle(), [resultBuffer, resultCallback](std::optional<IoResult> optResult)
-    {
-        if (!optResult.has_value())
-        {
-            return;
-        }
-
-        resultCallback(optResult->transform([&](const std::monostate&) { return NotifyEventSpan{ resultBuffer }; }));
-    });
+    return NewFilesystemEventsIoTask(ioMux, watchTarget.GetNativeHandle(), [resultBuffer] { return NotifyEventSpan{ resultBuffer }; });
 }
 
 Result<NotifyEventSpan> WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)

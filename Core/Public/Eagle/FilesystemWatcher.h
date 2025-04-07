@@ -7,16 +7,15 @@
 #include "WatchMask.h"
 #include "NotifyEventSpan.h"
 #include "IoMux.h"
-#include "IoQueryTask.h"
+#include "IoTask.h"
 
 namespace eagle
 {
-Result<IoQueryTask> WatchFilesystemEventsAsync(
+Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
 	const WatchTargetAsync& watchTarget
 	, std::span<char> resultBuffer
 	, WatchMask watchMask
 	, const IoMux& ioMux
-	, std::function<void(Result<NotifyEventSpan>)> resultCallback
 );
 
 Result<NotifyEventSpan> WatchFilesystemEvents(

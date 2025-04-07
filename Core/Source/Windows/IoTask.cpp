@@ -1,4 +1,4 @@
-#include "Eagle/IoQueryTask.h"
+#include "Eagle/IoTask.h"
 
 #include <Windows.h>
 
@@ -7,12 +7,7 @@
 
 namespace eagle
 {
-IoQueryTask::IoQueryTask(SelfFunc fn)
-	: m_selfFn(fn)
-{
-}
-
-Result<IoQueryTask> IoQueryTask::New(const IoMux& ioMux, const NativeHandle& target, ResultCallback resultCallback)
+Result<IoTask<NotifyEventSpan>> NewFilesystemEventsIoTask(const IoMux& ioMux, const NativeHandle& target, std::function<NotifyEventSpan()> watchResult)
 {
 	const HANDLE handle = ::CreateIoCompletionPort(
 		target,
@@ -26,9 +21,9 @@ Result<IoQueryTask> IoQueryTask::New(const IoMux& ioMux, const NativeHandle& tar
 		return std::unexpected{ Error::LastOsError() };
 	}
 
-	return IoQueryTask
+	return IoTask
 	{
-		[handle, resultCallback](std::optional<std::chrono::milliseconds> optTimeout) -> void
+		[handle, watchResult](std::optional<std::chrono::milliseconds> optTimeout) -> std::optional<Result<NotifyEventSpan>>
 		{
 			DWORD bytesTransferred{ 0u };
 			ULONG_PTR completionKey{};
@@ -42,19 +37,17 @@ Result<IoQueryTask> IoQueryTask::New(const IoMux& ioMux, const NativeHandle& tar
 				timeout
 			);
 
-			if (!result)
+			if (result)
 			{
-				if (!ioState)
-				{
-					resultCallback(std::nullopt);
-					return;
-				}
-
-				resultCallback(std::unexpected{ Error::LastOsError() });
-				return;
+				return watchResult();
 			}
 
-			resultCallback(std::monostate{});
+			if (!ioState)
+			{
+				return std::nullopt;
+			}
+
+			return std::unexpected{ Error::LastOsError() };
 		}
 	};
 }
