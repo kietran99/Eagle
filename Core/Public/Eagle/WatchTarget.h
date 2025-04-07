@@ -23,10 +23,34 @@ public:
 
 	const NativeHandle& GetNativeHandle() const { return *m_handle; }
 
-private:
+public:
+	WatchTarget();
 	WatchTarget(std::unique_ptr<NativeHandle> handle);
 		
 private:
 	std::unique_ptr<NativeHandle> m_handle;
+};
+
+struct AsyncIoState;
+
+class WatchTargetAsync
+{
+public:
+	static Result<WatchTargetAsync> New(const std::filesystem::path& dirPath);
+
+	~WatchTargetAsync();
+	WatchTargetAsync(const WatchTargetAsync&) = delete;
+	WatchTargetAsync(WatchTargetAsync&&) noexcept;
+	WatchTargetAsync& operator=(const WatchTargetAsync&) = delete;
+	WatchTargetAsync& operator=(WatchTargetAsync&&) noexcept;
+
+	AsyncIoState& IOState() const { return *m_ioState; }
+	const NativeHandle& GetNativeHandle() const;
+
+private:
+	WatchTargetAsync(std::unique_ptr<AsyncIoState> ioState);
+
+private:
+	std::unique_ptr<AsyncIoState> m_ioState;
 };
 }
