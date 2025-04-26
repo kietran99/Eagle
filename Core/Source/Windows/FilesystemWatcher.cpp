@@ -4,9 +4,36 @@
 #include <format>
 
 #include "NativeHandle.h"
+#include "AsyncIoState.h"
 
 namespace eagle
 {
+Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
+    const WatchTargetAsync& watchTarget
+    , std::span<char> resultBuffer
+    , WatchMask watchMask
+    , const IoMux& ioMux
+)
+{
+    const BOOL res = ::ReadDirectoryChangesW(
+        watchTarget.GetNativeHandle(),
+        resultBuffer.data(),
+        static_cast<DWORD>(resultBuffer.size_bytes()),
+        FALSE,
+        static_cast<DWORD>(ToNativeMask(watchMask)),
+        nullptr,
+        &watchTarget.IOState().NativeState(),
+        nullptr
+    );
+
+    if (res == FALSE)
+    {
+        return std::unexpected{ Error::LastOsError() };
+    }
+
+    return NewFilesystemEventsIoTask(ioMux, watchTarget.GetNativeHandle(), [resultBuffer] { return NotifyEventSpan{ resultBuffer }; });
+}
+
 Result<NotifyEventSpan> WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
