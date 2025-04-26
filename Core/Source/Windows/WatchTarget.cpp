@@ -8,11 +8,6 @@
 
 namespace eagle
 {
-WatchTarget::WatchTarget()
-    : m_handle(nullptr)
-{
-}
-
 WatchTarget::WatchTarget(std::unique_ptr<NativeHandle> handle)
     : m_handle(std::move(handle))
 {
