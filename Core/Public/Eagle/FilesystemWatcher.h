@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "Result.h"
 #include "WatchTarget.h"
 #include "WatchMask.h"
