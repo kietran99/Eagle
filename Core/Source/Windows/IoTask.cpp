@@ -21,14 +21,14 @@ Result<IoTask<NotifyEventSpan>> NewFilesystemEventsIoTask(const IoMux& ioMux, co
 		return std::unexpected{ Error::LastOsError() };
 	}
 
-	return IoTask
+	return IoTask<NotifyEventSpan>
 	{
 		[handle, watchResult](std::optional<std::chrono::milliseconds> optTimeout) -> std::optional<Result<NotifyEventSpan>>
 		{
 			DWORD bytesTransferred{ 0u };
 			ULONG_PTR completionKey{};
 			LPOVERLAPPED ioState{};
-			DWORD timeout{ optTimeout ? static_cast<DWORD>(optTimeout.value().count()) : INFINITE };
+			const DWORD timeout{ optTimeout ? static_cast<DWORD>(optTimeout.value().count()) : INFINITE };
 			const bool result = ::GetQueuedCompletionStatus(
 				handle,
 				&bytesTransferred,
