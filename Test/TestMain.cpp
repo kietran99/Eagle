@@ -12,7 +12,7 @@
 #include "Common/Sample/NotifyActionValues.h"
 #include "Common/Sample/WatchResultBuffers.h"
 
-TEST_CASE("Watch target should be constructed properly")
+TEST_CASE("Construct watch target")
 {
 	SUBCASE("Create expected result on valid directory path")
 	{
@@ -27,6 +27,30 @@ TEST_CASE("Watch target should be constructed properly")
 	SUBCASE("Create invalid watch target error on valid but non-directory path")
 	{
 		REQUIRE(eagle::WatchTarget::New(std::filesystem::current_path() / "Data" / "00" / "sample_0.txt").error().Kind() == eagle::ErrorKind::InvalidWatchTarget);
+	}
+
+	SUBCASE("Create expected result on valid directory path - async")
+	{
+		REQUIRE(eagle::WatchTargetAsync::New(std::filesystem::current_path() / "Data" / "00").has_value());
+	}
+
+	SUBCASE("Create invalid watch target error on non-existing path - async")
+	{
+		REQUIRE(eagle::WatchTargetAsync::New("non_existent").error().Kind() == eagle::ErrorKind::InvalidWatchTarget);
+	}
+
+	SUBCASE("Create invalid watch target error on valid but non-directory path - async")
+	{
+		REQUIRE(eagle::WatchTargetAsync::New(std::filesystem::current_path() / "Data" / "00" / "sample_0.txt").error().Kind() == eagle::ErrorKind::InvalidWatchTarget);
+	}
+}
+
+TEST_CASE("Construct IO multiplexer")
+{
+	SUBCASE("IO multiplexer should be constructed successfully")
+	{
+		const auto ioMux = eagle::IoMux::New();
+		REQUIRE(ioMux.has_value());
 	}
 }
 
@@ -98,5 +122,23 @@ TEST_CASE("Notify events parse")
 			REQUIRE(event.Action() == parsedEvent.Action);
 			REQUIRE(event.Path() == parsedEvent.Path);
 		});
+	}
+}
+
+TEST_CASE("Construct filesystem events IO task")
+{
+	using namespace std::literals;
+
+	SUBCASE("Filesystem events IO task should be constructed successfully")
+	{
+		const auto watchTarget{ eagle::WatchTargetAsync::New(std::filesystem::current_path() / "Data" / "00") };
+		REQUIRE(watchTarget.has_value());
+		const auto ioMux{ eagle::IoMux::New() };
+		REQUIRE(ioMux.has_value());
+		constexpr eagle::sample::ParsedNotifyEvent event{ eagle::NotifyAction::Create, "newdir"sv };
+		eagle::sample::WatchResultBuffer watchResultBuffer{ eagle::sample::MakeWatchResult(event) };
+		const auto filesystemEventsIoTask = eagle::NewFilesystemEventsIoTask(*ioMux, watchTarget->GetNativeHandle(), [&watchResultBuffer] { return eagle::NotifyEventSpan{ watchResultBuffer }; });
+		REQUIRE(filesystemEventsIoTask.has_value());
+		REQUIRE(filesystemEventsIoTask->valid());
 	}
 }
