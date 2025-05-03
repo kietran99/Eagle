@@ -27,8 +27,6 @@ project "Eagle"
         "Source",
     }
 
-    filter {}  
-
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
@@ -58,3 +56,16 @@ project "Eagle"
         runtime "Release"
         optimize "On"
         symbols "Off"
+
+    usage "INTERFACE"
+        links
+        {
+            "Eagle",
+        }
+
+        includedirs
+        {
+            "Public",
+        }
+
+    usage ""
