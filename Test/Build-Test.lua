@@ -25,10 +25,9 @@ project "Test"
     includedirs
     {
         "Source",
-        "../Core/Public",
     }
 
-    links
+    uses
     {
         "Eagle",
     }
