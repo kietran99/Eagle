@@ -14,10 +14,9 @@ project "App"
     includedirs
     {
         "Source",
-        "../Core/Public",
     }
 
-    links
+    uses
     {
         "Eagle",
     }
