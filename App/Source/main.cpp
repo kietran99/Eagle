@@ -6,8 +6,8 @@
 
 #include "Eagle/FilesystemWatcher.h"
 
-void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTarget, const eagle::IoMux& ioMux);
-void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget);
+void StartWatchFilesystemEventsLoop(const eagle::WatchTargetAsync& watchTarget, const eagle::IoMux& ioMux);
+void StartWatchFilesystemEventsSyncLoop(const eagle::WatchTarget& watchTarget);
 void OnWatchResult(eagle::Result<eagle::NotifyEventSpan> watchResult);
 
 constexpr bool shouldWatchAsync = true;
@@ -22,7 +22,7 @@ int main()
                 return eagle::IoMux::New()
                     .transform([&watchTarget](const eagle::IoMux& ioMux)
                     {
-                        StartWatchFilesystemEventsLoopAsync(watchTarget, ioMux);
+                        StartWatchFilesystemEventsLoop(watchTarget, ioMux);
                         return 0;
                     })
                     .transform_error([](const eagle::Error& error)
@@ -44,7 +44,7 @@ int main()
         return eagle::WatchTarget::New(std::filesystem::current_path() / "Data" / "00")
             .transform([](const eagle::WatchTarget& watchTarget)
             {
-                StartWatchFilesystemEventsLoop(watchTarget);
+                StartWatchFilesystemEventsSyncLoop(watchTarget);
                 return 0;
             })
             .transform_error([](const eagle::Error& error)
@@ -56,7 +56,7 @@ int main()
     }
 }
 
-void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTarget, const eagle::IoMux& ioMux)
+void StartWatchFilesystemEventsLoop(const eagle::WatchTargetAsync& watchTarget, const eagle::IoMux& ioMux)
 {
     std::array<char, 4096> filesystemEventsBuffer{};
 
@@ -65,7 +65,7 @@ void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTar
         | eagle::WatchMask::FileContent
         ;
 
-    eagle::Result<eagle::IoTask<eagle::NotifyEventSpan>> ioQueryTaskResult = eagle::WatchFilesystemEventsAsync(
+    eagle::Result<eagle::IoTask<eagle::NotifyEventSpan>> ioQueryTaskResult = eagle::WatchFilesystemEvents(
         watchTarget
         , filesystemEventsBuffer
         , watchMask
@@ -91,7 +91,7 @@ void StartWatchFilesystemEventsLoopAsync(const eagle::WatchTargetAsync& watchTar
     OnWatchResult(*optWatchResult);
 }
 
-void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget)
+void StartWatchFilesystemEventsSyncLoop(const eagle::WatchTarget& watchTarget)
 {
     std::array<char, 4096> dirChangesBuffer{};
 
@@ -102,7 +102,7 @@ void StartWatchFilesystemEventsLoop(const eagle::WatchTarget& watchTarget)
             | eagle::WatchMask::FileContent
             ;
 
-        const eagle::Result<eagle::NotifyEventSpan> watchResult = eagle::WatchFilesystemEvents(
+        const eagle::Result<eagle::NotifyEventSpan> watchResult = eagle::WatchFilesystemEventsSync(
             watchTarget
             , dirChangesBuffer
             , watchMask

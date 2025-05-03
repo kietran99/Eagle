@@ -8,7 +8,7 @@
 
 namespace eagle
 {
-Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
+Result<IoTask<NotifyEventSpan>> WatchFilesystemEvents(
     const WatchTargetAsync& watchTarget
     , std::span<char> resultBuffer
     , WatchMask watchMask
@@ -34,7 +34,7 @@ Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
     return NewFilesystemEventsIoTask(ioMux, watchTarget.GetNativeHandle(), [resultBuffer] { return NotifyEventSpan{ resultBuffer }; });
 }
 
-Result<NotifyEventSpan> WatchFilesystemEvents(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
+Result<NotifyEventSpan> WatchFilesystemEventsSync(const WatchTarget& watchTarget, std::span<char> resultBuffer, WatchMask watchMask, bool shouldWatchHierarchy)
 {
     DWORD bytesReturned{};
     const BOOL res = ::ReadDirectoryChangesW(

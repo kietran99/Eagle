@@ -9,14 +9,14 @@
 
 namespace eagle
 {
-Result<IoTask<NotifyEventSpan>> WatchFilesystemEventsAsync(
+Result<IoTask<NotifyEventSpan>> WatchFilesystemEvents(
 	const WatchTargetAsync& watchTarget
 	, std::span<char> resultBuffer
 	, WatchMask watchMask
 	, const IoMux& ioMux
 );
 
-Result<NotifyEventSpan> WatchFilesystemEvents(
+Result<NotifyEventSpan> WatchFilesystemEventsSync(
 	const WatchTarget& watchTarget
 	, std::span<char> resultBuffer
 	, WatchMask watchMask
