@@ -109,37 +109,7 @@ void StartWatchFilesystemEventsSyncLoop(const eagle::WatchTarget& watchTarget)
             , true
         );
 
-        if (!watchResult)
-        {
-            const auto& error = watchResult.error();
-            std::println("{}", error.Message());
-            break;
-        }
-
-        const auto NotifyEventToStr = [](const eagle::NotifyEvent& event)
-        {
-            const auto actionStr = [event]() -> const char*
-            {
-                switch (event.Action())
-                {
-                case eagle::NotifyAction::Create:           return "Created";
-                case eagle::NotifyAction::Delete:           return "Deleted";
-                case eagle::NotifyAction::Modify:           return "Modified";
-                case eagle::NotifyAction::MovedOldName:     return "Moved Old Name";
-                case eagle::NotifyAction::MovedNewName:     return "Moved New Name";
-                default: return "";
-                }
-            }();
-
-            return std::format("{} {}", actionStr, event.Path().string());
-        };
-
-        for (const auto& notifyEvent : *watchResult
-            | std::views::filter([](const eagle::NotifyEvent& event) { return event.Action() == eagle::NotifyAction::Create || event.Action() == eagle::NotifyAction::Modify; })
-            | std::views::transform(NotifyEventToStr))
-        {
-            std::println("{}", notifyEvent);
-        }
+		OnWatchResult(watchResult);
     } while (true);
 }
 
