@@ -79,10 +79,10 @@ void StartWatchFilesystemEventsLoop(const eagle::WatchTargetAsync& watchTarget, 
         return;
     }
 
-    auto futureWatchResult = ioQueryTaskResult->get_future();
+    auto watchResultFuture = ioQueryTaskResult->get_future();
     std::jthread t{ std::move(*ioQueryTaskResult), std::nullopt };
 
-    const auto optWatchResult = futureWatchResult.get();
+    const auto optWatchResult = watchResultFuture.get();
     if (!optWatchResult.has_value())
     {
         return;
