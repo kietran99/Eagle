@@ -26,10 +26,7 @@ jobs:
 
       - name: Build
         run: |
-          $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-          $ToolkitPremakeDir = Join-Path $ScriptDir "FlightKitCpp\Premake" | Resolve-Path -ErrorAction Stop
-          $GetPremakeScript = Join-Path $ToolkitPremakeDir "get_binaries.py"
-          $PremakePath = & python $GetPremakeScript
+          $PremakePath = & python "FlightKitCpp\Premake\get_binaries.py"
           if (-not $PremakePath) {
               Write-Error "Failed to get Premake path from get_binaries.py"
               exit 1
