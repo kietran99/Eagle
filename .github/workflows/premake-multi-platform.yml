@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kietran99/FlightKitCpp
-          path: ../FlightKitCpp
+          path: FlightKitCpp
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: |
           $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-          $ToolkitPremakeDir = Join-Path $ScriptDir "..\..\FlightKitCpp\Premake" | Resolve-Path -ErrorAction Stop
+          $ToolkitPremakeDir = Join-Path $ScriptDir "FlightKitCpp\Premake" | Resolve-Path -ErrorAction Stop
           $GetPremakeScript = Join-Path $ToolkitPremakeDir "get_binaries.py"
           $PremakePath = & python $GetPremakeScript
           if (-not $PremakePath) {
