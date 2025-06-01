@@ -18,7 +18,7 @@ jobs:
       - name: Checkout FlightKit
         uses: actions/checkout@v4
         with:
-          repository: github.com/kietran99/FlightKitCpp
+          repository: kietran99/FlightKitCpp
           path: ../FlightKitCpp
 
       - name: Add MSBuild to PATH
